@@ -2,7 +2,6 @@
 
 A premium, single-page web application designed for developers to manage their coding preparation efficiently. Inspired by the **Codolio** aesthetic, this tool provides a seamless experience for organizing topics, sub-topics, and questions with a modern SaaS-style interface.
 
-![Branding](/home/cheeku1855/.gemini/antigravity/brain/df6fa45e-784b-4bf5-903f-cfddde47c38d/verify_branding.webp)
 
 ## ✨ Features
 
