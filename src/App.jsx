@@ -1,3 +1,4 @@
+// src/App.jsx
 import { useEffect, useState } from "react"
 import { fetchSheet } from "./api/sheetApi"
 import { useSheetStore } from "./store/sheetStore"
@@ -31,7 +32,6 @@ function App() {
     fetchSheet().then(setSheet)
   }, [])
 
-  // Update document title dynamically
   useEffect(() => {
     if (sheetData) {
       const qTotal = sheetData.questions.filter(q => !q.isPlaceholder).length
@@ -52,7 +52,6 @@ function App() {
   const questions = sheetData.questions
   const subTopicOrder = sheet.config.subTopicOrder || {}
 
-  /* ===== BUILD STABLE HIERARCHY ===== */
   const hierarchy = {}
 
   topics.forEach((topic) => {
@@ -69,7 +68,6 @@ function App() {
     hierarchy[t][s].push(q)
   })
 
-  // Filter topics based on search query
   const filteredTopics = searchQuery.trim()
     ? topics.filter(topic => {
         const matchesTopic = topic.toLowerCase().includes(searchQuery.toLowerCase())
@@ -83,7 +81,6 @@ function App() {
       })
     : topics
 
-  /* ===== DRAG HANDLER ===== */
   const onDragEnd = (result) => {
     if (!result.destination) return
 
@@ -122,37 +119,31 @@ function App() {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
-        {/* Header */}
         <Header sheet={sheet} questions={questions} />
 
-        {/* Main Content */}
-        <main className="max-w-[1400px] mx-auto p-6">
-          {/* Search and Add Topic Bar */}
-          <div className="flex flex-wrap gap-4 mb-6">
-            {/* Search */}
-            <div className="flex-1 min-w-[250px] relative">
+        <main className="max-w-[1400px] mx-auto p-4 md:p-6">
+          <div className="flex flex-col sm:flex-row gap-3 mb-6">
+            <div className="flex-1 relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none transition-colors">
                 <IconSearch size={18} />
               </div>
               <input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search topics, subtopics, or questions..."
-                className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/50 rounded-xl outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 placeholder-slate-500 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100 transition-all shadow-sm dark:shadow-none"
+                placeholder="Search topics..."
+                className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/50 rounded-xl outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 placeholder-slate-500 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100 transition-all shadow-sm"
               />
             </div>
 
-            {/* Add Topic Button */}
             <button
               onClick={() => setShowAddTopic(true)}
-              className="group flex items-center gap-2 px-6 py-3 text-sm font-bold text-white bg-slate-900 dark:bg-amber-500 dark:text-slate-900 rounded-xl hover:bg-slate-800 dark:hover:bg-amber-400 hover:shadow-lg hover:shadow-slate-900/10 dark:hover:shadow-amber-500/20 hover:scale-[1.02] active:scale-95 transition-all shadow-md"
+              className="group flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-white bg-slate-900 dark:bg-amber-500 dark:text-slate-900 rounded-xl hover:bg-slate-800 dark:hover:bg-amber-400 hover:shadow-lg transition-all shadow-md"
             >
               <IconPlus size={18} className="transition-transform group-hover:rotate-90" />
               Add Topic
             </button>
           </div>
 
-          {/* Topics List */}
           <Droppable droppableId="topics" type="TOPIC">
             {(p) => (
               <div
@@ -177,7 +168,7 @@ function App() {
                         {...p.draggableProps}
                         {...p.dragHandleProps}
                         className={`transition-opacity duration-200 ${
-                          snapshot.isDragging ? 'opacity-80' : 'opacity-100 animate-fade-in-up'
+                          snapshot.isDragging ? 'opacity-80' : 'opacity-100'
                         }`}
                         style={{
                           ...p.draggableProps.style,
@@ -196,20 +187,14 @@ function App() {
             )}
           </Droppable>
 
-          {/* Empty State */}
           {topics.length === 0 && (
             <div className="py-16 text-center text-slate-500 dark:text-slate-500">
-              <div className="text-lg mb-2">
-                No topics yet
-              </div>
-              <div className="text-sm">
-                Click "Add Topic" to get started
-              </div>
+              <div className="text-lg mb-2">No topics yet</div>
+              <div className="text-sm">Click "Add Topic" to get started</div>
             </div>
           )}
         </main>
 
-        {/* Add Topic Modal */}
         <Modal
           isOpen={showAddTopic}
           onClose={() => {
@@ -221,41 +206,31 @@ function App() {
         >
           <div className="flex flex-col">
             <div className="flex flex-col gap-2 mb-6">
-              <label
-                className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2"
-                htmlFor="topicName"
-              >
+              <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
                 Topic Name <span className="text-red-500">*</span>
               </label>
               <input
-                id="topicName"
                 value={newTopic}
                 onChange={(e) => setNewTopic(e.target.value)}
-                placeholder="e.g., Arrays, Linked Lists, Dynamic Programming..."
-                className="w-full px-4 py-3 text-base bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/20 placeholder-slate-500 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100 transition-all"
+                placeholder="e.g., Arrays..."
+                className="w-full px-4 py-3 text-base bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/20 text-slate-900 dark:text-slate-100 transition-all"
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleAddTopic()
                 }}
               />
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-500 leading-relaxed">
-                Create a high-level category to organize your questions.
-              </p>
             </div>
             
             <div className="flex items-center justify-end gap-3 mt-6">
               <button
-                onClick={() => {
-                  setShowAddTopic(false)
-                  setNewTopic("")
-                }}
-                className="px-6 py-3 min-h-[3.25rem] text-base font-semibold text-slate-600 dark:text-slate-200 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-900 dark:hover:text-white transition-colors min-w-[100px]"
+                onClick={() => setShowAddTopic(false)}
+                className="px-6 py-3 text-base font-semibold text-slate-600 dark:text-slate-200 bg-slate-100 dark:bg-slate-700 rounded-lg transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleAddTopic}
-                className="px-6 py-3 min-h-[3.25rem] text-base font-semibold text-slate-900 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg hover:shadow-lg hover:shadow-amber-500/20 hover:-translate-y-px transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none min-w-[130px]"
+                className="px-6 py-3 text-base font-semibold text-slate-900 bg-amber-500 rounded-lg hover:shadow-lg transition-all disabled:opacity-50"
                 disabled={!newTopic.trim()}
               >
                 Create Topic
